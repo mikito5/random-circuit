@@ -17,5 +17,6 @@ and excites it with a **random input signal**.
 
 > We observed a rare event: uncontrolled confidence.
 
-![result](result.svg)
+![result](./result.svg?raw=1)
+
 
