@@ -228,7 +228,7 @@ and excites it with a **random input signal**.
 - **Input**: {x_desc}
 
 ### Useless judgement
-- **verdict**: **{verdict}**（{verdict_jp}）
+- **verdict**: **{verdict}**
 - overshoot-ish: {overshoot:.3f}
 - wiggles: {wiggles}
 - FFT peak (output): {peak_f:.3f} (arb.)
@@ -240,3 +240,4 @@ and excites it with a **random input signal**.
 """
 with open("README.md", "w", encoding="utf-8") as f:
     f.write(readme)
+
