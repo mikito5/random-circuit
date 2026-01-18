@@ -130,13 +130,6 @@ elif score < 0.60:
 else:
     verdict = "feral"
 
-verdict_jp_map = {
-    "calm": "おだやか",
-    "restless": "そわそわ",
-    "feral": "だいぶ暴れた"
-}
-verdict_jp = verdict_jp_map[verdict]
-
 # ================== 2) FFT plot (input + output) ==================
 # Center signals (remove DC), window for nicer spectrum
 x_center = x - np.mean(x)
