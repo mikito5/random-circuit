@@ -9,7 +9,7 @@ rng = np.random.default_rng()
 
 # ================== Simulation time ==================
 T = 10.0
-N = 4096  # FFTしやすい
+N = 4096
 t = np.linspace(0, T, N, endpoint=False)
 dt = t[1] - t[0]
 fs = 1.0 / dt
@@ -60,7 +60,6 @@ x, x_desc = make_input(input_kind, t, dt)
 
 # ================== Core filters ==================
 def first_order_lowpass(x, tau, dt):
-    """y[n] = a y[n-1] + (1-a) x[n]"""
     y = np.zeros_like(x)
     tau = max(float(tau), 1e-9)
     a = np.exp(-dt / tau)
@@ -70,16 +69,10 @@ def first_order_lowpass(x, tau, dt):
     return y
 
 def rlc_analog_tf(kind, wn, zeta):
-    """
-    Den(s) = s^2 + 2ζωn s + ωn^2
-    low:   Num(s)= ωn^2
-    high:  Num(s)= s^2
-    band:  Num(s)= 2ζωn s
-    notch: Num(s)= s^2 + ωn^2
-    Return num_s, den_s as [b0,b1,b2] for b0 s^2 + b1 s + b2
-    """
+    # Den(s) = s^2 + 2ζωn s + ωn^2
     den_s = [1.0, 2.0*zeta*wn, wn**2]
 
+    # Num(s) shapes
     if kind == "low":
         num_s = [0.0, 0.0, wn**2]
     elif kind == "high":
@@ -94,23 +87,16 @@ def rlc_analog_tf(kind, wn, zeta):
     return num_s, den_s
 
 def bilinear_biquad_from_analog(num_s, den_s, dt):
-    """
-    Analog: (b0 s^2 + b1 s + b2) / (a0 s^2 + a1 s + a2)
-    Bilinear: s = K*(1 - z^-1)/(1 + z^-1), K=2/dt
-    Returns b=[b0,b1,b2], a=[1,a1,a2] for DF1:
-      y[n] = b0 x[n] + b1 x[n-1] + b2 x[n-2] - a1 y[n-1] - a2 y[n-2]
-    """
     b0, b1, b2 = map(float, num_s)
     a0, a1, a2 = map(float, den_s)
     K = 2.0 / dt
 
-    # (1 - z^-1), (1 + z^-1)
-    p = np.array([1.0, -1.0])
-    q = np.array([1.0,  1.0])
+    p = np.array([1.0, -1.0])  # (1 - z^-1)
+    q = np.array([1.0,  1.0])  # (1 + z^-1)
 
-    p2 = np.convolve(p, p)   # (1 - z^-1)^2
-    q2 = np.convolve(q, q)   # (1 + z^-1)^2
-    pq = np.convolve(p, q)   # (1 - z^-1)(1 + z^-1) = 1 - z^-2
+    p2 = np.convolve(p, p)
+    q2 = np.convolve(q, q)
+    pq = np.convolve(p, q)     # = [1, 0, -1]
 
     B = (b0 * (K**2)) * p2 + (b1 * K) * pq + b2 * q2
     A = (a0 * (K**2)) * p2 + (a1 * K) * pq + a2 * q2
@@ -120,11 +106,9 @@ def bilinear_biquad_from_analog(num_s, den_s, dt):
 
     B = B / A[0]
     A = A / A[0]
-
-    return B, A  # length-3 each
+    return B, A  # each length 3
 
 def biquad_filter(x, b, a):
-    """Direct Form I biquad, a[0]=1 assumed."""
     y = np.zeros_like(x)
     b0, b1, b2 = map(float, b)
     _, a1, a2 = map(float, a)
@@ -139,7 +123,7 @@ def biquad_filter(x, b, a):
         y2, y1 = y1, y0
     return y
 
-# ================== Random system + random filter-kind by system ==================
+# ================== Random system + random kind-by-system ==================
 system = rng.choice(["RC", "RL", "RLC"])
 
 if system in ["RC", "RL"]:
@@ -147,41 +131,61 @@ if system in ["RC", "RL"]:
 else:
     filter_kind = rng.choice(["low", "high", "band", "notch"])
 
+# ================== RLC: choose L,C so wn is visible; choose Q so band/notch is obvious ==================
+def pick_LC_visible_wn(L_VALUES, C_VALUES, wn_min=0.30, wn_max=3.00, tries=200):
+    # wn here is in "arb." consistent with your time axis
+    for _ in range(tries):
+        L = float(rng.choice(L_VALUES))
+        C = float(rng.choice(C_VALUES))
+        wn = 1.0 / np.sqrt(L * C)
+        if wn_min <= wn <= wn_max:
+            return L, C, wn
+    # fallback: just return something
+    L = float(rng.choice(L_VALUES))
+    C = float(rng.choice(C_VALUES))
+    wn = 1.0 / np.sqrt(L * C)
+    return L, C, wn
+
 # ================== Simulate ==================
 if system == "RC":
     R = float(rng.choice(R_VALUES))
     C = float(rng.choice(C_VALUES))
     tau = R * C
-
     y_lp = first_order_lowpass(x, tau, dt)
     y = y_lp if filter_kind == "low" else (x - y_lp)
-
     params = f"R={R:.2f}, C={C:.2f}, τ={tau:.2f}"
 
 elif system == "RL":
     R = float(rng.choice(R_VALUES))
     L = float(rng.choice(L_VALUES))
     tau = L / max(R, 1e-12)
-
     y_lp = first_order_lowpass(x, tau, dt)
     y = y_lp if filter_kind == "low" else (x - y_lp)
-
     params = f"R={R:.2f}, L={L:.2f}, τ={tau:.2f}"
 
 else:
-    R = float(rng.choice(R_VALUES))
-    L = float(rng.choice(L_VALUES))
-    C = float(rng.choice(C_VALUES))
+    # Pick wn to sit in a nice visible band
+    L, C, wn = pick_LC_visible_wn(L_VALUES, C_VALUES, wn_min=0.30, wn_max=3.00)
 
-    wn = 1.0 / np.sqrt(L * C)
-    zeta = (R / 2.0) * np.sqrt(C / L)
-    zeta = max(zeta, 1e-6)  # safety
+    # Pick Q by kind to make band/notch obvious
+    if filter_kind == "band":
+        Q = float(rng.uniform(2.0, 8.0))     # bump visible
+    elif filter_kind == "notch":
+        Q = float(rng.uniform(6.0, 20.0))    # notch deep
+    else:
+        Q = float(rng.uniform(0.7, 6.0))     # low/high: whatever
+
+    zeta = 1.0 / (2.0 * Q)
+
+    # Choose R to match this zeta for your series-RLC-style formula:
+    # zeta = (R/2)*sqrt(C/L)  => R = 2*zeta*sqrt(L/C)
+    R = 2.0 * zeta * np.sqrt(L / C)
 
     num_s, den_s = rlc_analog_tf(filter_kind, wn, zeta)
     b, a = bilinear_biquad_from_analog(num_s, den_s, dt)
     y = biquad_filter(x, b, a)
 
-    params = f"R={R:.2f}, L={L:.2f}, C={C:.2f}, ωn={wn:.2f}, ζ={zeta:.2f}"
+    params = f"R={R:.3f}, L={L:.2f}, C={C:.2f}, ωn={wn:.2f}, ζ={zeta:.3f}, Q={Q:.2f}"
 
 # ================== 1) “Judgement” ==================
 y_center = y - np.mean(y)
@@ -197,7 +201,6 @@ dy = np.diff(y_norm)
 wiggles = int(np.sum((dy[:-1] * dy[1:]) < 0))
 
 score = 0.7 * abs(overshoot) + 0.3 * (wiggles / 50.0)
-
 if score < 0.25:
     verdict = "calm"
 elif score < 0.60:
@@ -214,11 +217,8 @@ X = np.fft.rfft(x_center * window)
 Y = np.fft.rfft(y_center * window)
 
 freq = np.fft.rfftfreq(len(y_center), d=dt)
-
-magX = np.abs(X)
-magY = np.abs(Y)
-magX[0] = 0.0
-magY[0] = 0.0
+magX = np.abs(X); magY = np.abs(Y)
+magX[0] = 0.0; magY[0] = 0.0
 
 mask = freq > 0
 freqp = freq[mask]
@@ -229,7 +229,7 @@ peak_k = int(np.argmax(magYp))
 peak_f = float(freqp[peak_k])
 peak_mag = float(magYp[peak_k])
 
-# Rough response-shape guess from |Y|/|X|
+# Rough shape guess from |Y|/|X|
 eps = 1e-12
 H = magYp / (magXp + eps)
 split = np.median(freqp)
