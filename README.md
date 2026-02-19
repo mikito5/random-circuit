@@ -3,20 +3,20 @@
 Every day, GitHub Actions generates a **random dynamical system**
 and excites it with a **random input signal**.
 
-## Today's Result (2026-02-18)
+## Today's Result (2026-02-19)
 
-- **System**: RLC
-- **Filter kind (random by system)**: low
-- **Parameters**: R=0.584, L=10.00, C=1.00, ωn=0.32, ζ=0.092, Q=5.42
-- **Input**: ramp (A=1.05)
+- **System**: RL
+- **Filter kind (random by system)**: high
+- **Parameters**: R=1.00, L=0.50, τ=0.50
+- **Input**: sine (A=1.00, f=0.43 Hz)
 
 ### Useless judgement
 - **verdict**: **calm**
-- overshoot-ish: 0.139
-- wiggles: 0
-- FFT peak (output): 0.100 (arb.)
-- rough shape guess from |Y|/|X|: high-ish
+- overshoot-ish: 0.271
+- wiggles: 9
+- FFT peak (output): 0.400 (arb.)
+- rough shape guess from |Y|/|X|: band/flat-ish
 
-> Today, the system pretended to be well-behaved.
+> The dynamics were suspiciously polite.
 
 ![result](result.svg)
