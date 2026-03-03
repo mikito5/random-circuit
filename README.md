@@ -3,20 +3,20 @@
 Every day, GitHub Actions generates a **random dynamical system**
 and excites it with a **random input signal**.
 
-## Today's Result (2026-03-02)
+## Today's Result (2026-03-03)
 
 - **System**: RC
 - **Filter kind (random by system)**: low
-- **Parameters**: R=10.00, C=0.50, τ=5.00
-- **Input**: noise (σ≈0.56)
+- **Parameters**: R=10.00, C=0.10, τ=1.00
+- **Input**: ramp (A=1.04)
 
 ### Useless judgement
-- **verdict**: **feral**
-- overshoot-ish: 1.137
-- wiggles: 2035
-- FFT peak (output): 0.200 (arb.)
-- rough shape guess from |Y|/|X|: low-ish
+- **verdict**: **calm**
+- overshoot-ish: 0.102
+- wiggles: 0
+- FFT peak (output): 0.100 (arb.)
+- rough shape guess from |Y|/|X|: band/flat-ish
 
-> A resonance-like thing happened. Please do not ask why.
+> The dynamics were suspiciously polite.
 
 ![result](result.svg)
