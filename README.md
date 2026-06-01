@@ -3,20 +3,20 @@
 Every day, GitHub Actions generates a **random dynamical system**
 and excites it with a **random input signal**.
 
-## Today's Result (2026-05-31)
+## Today's Result (2026-06-01)
 
-- **System**: RC
-- **Filter kind (random by system)**: low
-- **Parameters**: R=1.00, C=2.00, τ=2.00
-- **Input**: ramp (A=1.41)
+- **System**: RLC
+- **Filter kind (random by system)**: notch
+- **Parameters**: R=0.628, L=10.00, C=0.20, ωn=0.71, ζ=0.044, Q=11.26
+- **Input**: impulse (area≈1.02)
 
 ### Useless judgement
-- **verdict**: **calm**
-- overshoot-ish: 0.107
-- wiggles: 0
+- **verdict**: **feral**
+- overshoot-ish: 1.000
+- wiggles: 4
 - FFT peak (output): 0.100 (arb.)
 - rough shape guess from |Y|/|X|: band/flat-ish
 
-> Nothing happened. Therefore, it is perfect.
+> We observed a rare event: uncontrolled confidence.
 
 ![result](result.svg)
