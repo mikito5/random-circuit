@@ -3,20 +3,20 @@
 Every day, GitHub Actions generates a **random dynamical system**
 and excites it with a **random input signal**.
 
-## Today's Result (2026-06-27)
+## Today's Result (2026-06-28)
 
 - **System**: RC
 - **Filter kind (random by system)**: high
-- **Parameters**: R=10.00, C=5.00, τ=50.00
-- **Input**: sine (A=1.43, f=0.80 Hz)
+- **Parameters**: R=2.00, C=2.00, τ=4.00
+- **Input**: sine (A=1.28, f=1.36 Hz)
 
 ### Useless judgement
 - **verdict**: **feral**
-- overshoot-ish: 1.144
-- wiggles: 16
-- FFT peak (output): 0.800 (arb.)
+- overshoot-ish: 0.901
+- wiggles: 27
+- FFT peak (output): 1.400 (arb.)
 - rough shape guess from |Y|/|X|: band/flat-ish
 
-> We observed a rare event: uncontrolled confidence.
+> The system chose violence (mathematically).
 
 ![result](result.svg)
