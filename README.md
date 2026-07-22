@@ -3,20 +3,20 @@
 Every day, GitHub Actions generates a **random dynamical system**
 and excites it with a **random input signal**.
 
-## Today's Result (2026-07-21)
+## Today's Result (2026-07-22)
 
-- **System**: RC
+- **System**: RLC
 - **Filter kind (random by system)**: high
-- **Parameters**: R=1.00, C=0.10, τ=0.10
-- **Input**: step (A=1.43)
+- **Parameters**: R=0.498, L=2.00, C=0.50, ωn=1.00, ζ=0.125, Q=4.01
+- **Input**: square (A=1.35, f=0.21 Hz)
 
 ### Useless judgement
-- **verdict**: **feral**
-- overshoot-ish: 1.010
-- wiggles: 1
-- FFT peak (output): 0.100 (arb.)
+- **verdict**: **restless**
+- overshoot-ish: 0.611
+- wiggles: 4
+- FFT peak (output): 0.200 (arb.)
 - rough shape guess from |Y|/|X|: band/flat-ish
 
-> The system chose violence (mathematically).
+> This is not chaos—just enthusiasm.
 
 ![result](result.svg)
