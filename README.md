@@ -3,19 +3,19 @@
 Every day, GitHub Actions generates a **random dynamical system**
 and excites it with a **random input signal**.
 
-## Today's Result (2026-10-28)
+## Today's Result (2026-10-29)
 
-- **System**: RL
-- **Filter kind (random by system)**: low
-- **Parameters**: R=10.00, L=0.50, τ=0.05
-- **Input**: impulse (area≈1.10)
+- **System**: RLC
+- **Filter kind (random by system)**: notch
+- **Parameters**: R=0.256, L=5.00, C=0.50, ωn=0.63, ζ=0.040, Q=12.37
+- **Input**: square (A=0.82, f=0.99 Hz)
 
 ### Useless judgement
 - **verdict**: **feral**
-- overshoot-ish: 1.005
-- wiggles: 1
-- FFT peak (output): 0.100 (arb.)
-- rough shape guess from |Y|/|X|: low-ish
+- overshoot-ish: 0.996
+- wiggles: 20
+- FFT peak (output): 1.000 (arb.)
+- rough shape guess from |Y|/|X|: band/flat-ish
 
 > A resonance-like thing happened. Please do not ask why.
 
